@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/fragmentTrimestral">
+    <fragment
+        android:id="@+id/fragmentTrimestral"
+        android:name="com.zamfir.maxcalculadora.view.fragment.FragmentTrimestral"
+        android:label="FragmentTrimestral" />
+    <fragment
+        android:id="@+id/fragmentMeta"
+        android:name="com.zamfir.maxcalculadora.view.fragment.FragmentMeta"
+        android:label="fragment_meta"
+        tools:layout="@layout/fragment_meta" />
+    <fragment
+        android:id="@+id/fragmentSalario"
+        android:name="com.zamfir.maxcalculadora.view.fragment.FragmentSalario"
+        android:label="FragmentSalario" />
+    <fragment
+        android:id="@+id/fragmentFerias"
+        android:name="com.zamfir.maxcalculadora.view.fragment.FragmentFerias"
+        android:label="FragmentFerias" />
+</navigation>

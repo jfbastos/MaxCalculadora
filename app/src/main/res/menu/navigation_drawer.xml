@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/trimestral"
+        android:icon="@drawable/baseline_calendar_month_24"
+        android:title="Trimestral"
+        android:checkable="true"/>
+
+    <item
+        android:id="@+id/meta"
+        android:icon="@drawable/baseline_location_on_24"
+        android:title="Meta (Dev)"
+        android:checkable="true"/>
+
+    <item
+        android:id="@+id/ferias"
+        android:icon="@drawable/snowboarding"
+        android:title="Férias"
+        android:checkable="true"/>
+
+    <item
+        android:id="@+id/liquido"
+        android:icon="@drawable/baseline_attach_money_24"
+        android:title="Salário líquido"
+        android:checkable="true"/>
+
+</menu>
