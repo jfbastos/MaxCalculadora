@@ -19,10 +19,4 @@
         android:title="Férias"
         android:checkable="true"/>
 
-    <item
-        android:id="@+id/liquido"
-        android:icon="@drawable/baseline_attach_money_24"
-        android:title="Salário líquido"
-        android:checkable="true"/>
-
 </menu>

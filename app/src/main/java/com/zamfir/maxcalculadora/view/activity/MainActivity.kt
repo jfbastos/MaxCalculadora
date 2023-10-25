@@ -1,28 +1,23 @@
 package com.zamfir.maxcalculadora.view.activity
 
+import android.content.Context
 import android.os.Bundle
-import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import androidx.core.os.bundleOf
+import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
-import androidx.navigation.NavHostController
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.appbar.MaterialToolbar
 import com.zamfir.maxcalculadora.R
 import com.zamfir.maxcalculadora.databinding.ActivityMainBinding
+import com.zamfir.maxcalculadora.util.Constants
 import com.zamfir.maxcalculadora.util.show
+import com.zamfir.maxcalculadora.view.fragment.FirstTimeFragment
 import com.zamfir.maxcalculadora.view.fragment.FragmentFerias
 import com.zamfir.maxcalculadora.view.fragment.FragmentMeta
-import com.zamfir.maxcalculadora.view.fragment.FragmentSalario
 import com.zamfir.maxcalculadora.view.fragment.FragmentTrimestral
 
 class MainActivity : AppCompatActivity() {
@@ -30,6 +25,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     var toolbar : MaterialToolbar? = null
     private var salaryIsShowing = false
+    private var salarioTextView : TextView? = null
+    private var nomeTextView : TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,8 +35,28 @@ class MainActivity : AppCompatActivity() {
 
         toolbar = binding.toolbar
 
+         binding.navigationDrawer.getHeaderView(0).also{
+             salarioTextView = it.findViewById(R.id.salario_usuario)
+             nomeTextView = it.findViewById(R.id.nome_usuario)
+        }
+        salarioTextView?.text = getSalary()
+        nomeTextView?.text = getNome()
 
+        val bundleSalario = Bundle().apply {
+            putString("salario", salarioTextView?.text.toString())
+        }
 
+        if(salarioTextView?.text.isNullOrBlank()){
+            binding.toolbar.navigationIcon = null
+            supportFragmentManager.commit {
+                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                replace(R.id.nav_host_fragment, FirstTimeFragment())
+                addToBackStack(null)
+            }
+        }else{
+            binding.navigationDrawer.setCheckedItem(binding.navigationDrawer.menu[0].itemId)
+            goToTrimestral(bundleSalario)
+        }
 
         binding.toolbar.setNavigationOnClickListener {
             binding.drawerLayout.open()
@@ -49,17 +66,7 @@ class MainActivity : AppCompatActivity() {
             menuItem.isChecked = true
             when(menuItem.itemId){
                 binding.navigationDrawer.menu.findItem(R.id.trimestral).itemId -> {
-                    val salario = Bundle().apply {
-                        putString("salario", binding.navigationDrawer.getHeaderView(0).findViewById<TextView>(R.id.salary).text.toString())
-                    }
-                    val fragment = FragmentTrimestral()
-                    fragment.arguments = salario
-                    supportFragmentManager.commit {
-                        setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        replace(R.id.nav_host_fragment, fragment)
-
-                        addToBackStack(null)
-                    }
+                    goToTrimestral(bundleSalario)
                     binding.drawerLayout.close()
                 }
                 binding.navigationDrawer.menu.findItem(R.id.meta).itemId -> {
@@ -78,14 +85,6 @@ class MainActivity : AppCompatActivity() {
                         binding.drawerLayout.close()
                     }
                 }
-                binding.navigationDrawer.menu.findItem(R.id.liquido).itemId -> {
-                    supportFragmentManager.commit {
-                        setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        replace(R.id.nav_host_fragment, FragmentSalario())
-                        addToBackStack(null)
-                        binding.drawerLayout.close()
-                    }
-                }
             }
             true
         }
@@ -93,16 +92,34 @@ class MainActivity : AppCompatActivity() {
         salaryVisibilityConfig()
     }
 
-    private fun salaryVisibilityConfig() {
-        val salary = binding.navigationDrawer.getHeaderView(0).findViewById<TextView>(R.id.salary)
-        val salaryHidder = binding.navigationDrawer.getHeaderView(0).findViewById<CardView>(R.id.salary_hide)
+    private fun goToTrimestral(bundleSalario: Bundle) {
+        val fragment = FragmentTrimestral()
+        fragment.arguments = bundleSalario
+        supportFragmentManager.commit {
+            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            replace(R.id.nav_host_fragment, fragment)
+            addToBackStack(null)
+        }
+    }
 
-        salary.text = "R$ 3.000,00"
+    private fun salaryVisibilityConfig() {
+        val salaryHidder = binding.navigationDrawer.getHeaderView(0).findViewById<CardView>(R.id.salary_hide)
         salaryHidder.show(!salaryIsShowing)
 
         binding.navigationDrawer.getHeaderView(0).findViewById<ImageButton>(R.id.blur_salary_btn)?.setOnClickListener {
             salaryHidder.show(!salaryHidder.isVisible)
         }
+    }
+
+    //TODO -> Passar para uma viewModel
+    private fun getSalary() : String{
+        val sharedPreferences = this.getSharedPreferences(Constants.SHARED_FILE, Context.MODE_PRIVATE)
+        return sharedPreferences.getString(Constants.SHARED_SALARY_KEY, "") ?: ""
+    }
+
+    private fun getNome() : String{
+        val sharedPreferences = this.getSharedPreferences(Constants.SHARED_FILE, Context.MODE_PRIVATE)
+        return sharedPreferences.getString(Constants.SHARED_NAME_KEY, "") ?: ""
     }
 
 

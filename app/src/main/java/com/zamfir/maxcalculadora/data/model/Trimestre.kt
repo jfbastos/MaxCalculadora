@@ -10,7 +10,7 @@ data class Trimestre(
     val valorTerceiroTrimestre : Double,
     val valorQuartoTrimestre : Double,
     val metaAtingida : Double,
-    val isCalculoParcial : Int,
+    val isCalculoParcial : Boolean,
     val dataAdmissao : String,
 ){
    @PrimaryKey(autoGenerate = true) var id : Int = 0

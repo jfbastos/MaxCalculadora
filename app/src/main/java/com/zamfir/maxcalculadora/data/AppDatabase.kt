@@ -7,22 +7,16 @@ import com.zamfir.maxcalculadora.data.model.*
 
 @Database(
     entities = [
-        Desconto::class,
         Ferias::class,
         Historico::class,
         Meta::class,
-        Provento::class,
-        Salario::class,
         Trimestre::class
     ],
-    version = 2
+    version = 1
 )
 abstract class AppDatabase : RoomDatabase(){
-    abstract fun descontoDao() : DescontoDao
     abstract fun feriasDao() : FeriasDao
     abstract fun historicoDao() : HistoricoDao
     abstract fun metaDao() : MetaDao
-    abstract fun proventoDao() : ProventoDao
-    abstract fun salarioDao() : SalarioDao
     abstract fun trimestreDao()  : TrimestreDao
 }
