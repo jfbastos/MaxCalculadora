@@ -2,4 +2,5 @@
     <string name="app_name">MaxCalculadora</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="info_calculo_parcial">O cálculo da meta, será baseada em cima da data da sua admissão.\n\nSe você trabalhou 15 dias ou mais no mês, ele será considerado no cálculo, se foi menos que 15 dias, deverá considerar o mês seguinte. \n\nPor exemplo: Data de admissão 10/02, logo você deverá informar que o mês de admissão foi em Fevereiro.</string>
 </resources>

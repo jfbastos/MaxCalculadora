@@ -17,6 +17,8 @@ fun TextInputEditText.setMonetary(text : String){
     }
 }
 
+fun Double?.doubleToStringWithTwoDecimals() = String.format("%.2f", (this ?: 0.0))
+
 fun String?.convertMonetaryToDouble(): Double {
     if (this.isNullOrEmpty()) return 0.0
     val valueWithoutDot = removeDot(this.toString())

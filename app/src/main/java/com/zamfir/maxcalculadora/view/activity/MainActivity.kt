@@ -1,61 +1,112 @@
 package com.zamfir.maxcalculadora.view.activity
 
+import android.animation.ObjectAnimator
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageButton
+import android.util.Log
+import android.view.View
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.get
-import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import com.google.android.material.appbar.MaterialToolbar
 import com.zamfir.maxcalculadora.R
 import com.zamfir.maxcalculadora.databinding.ActivityMainBinding
 import com.zamfir.maxcalculadora.util.Constants
-import com.zamfir.maxcalculadora.util.show
-import com.zamfir.maxcalculadora.view.fragment.FirstTimeFragment
 import com.zamfir.maxcalculadora.view.fragment.FragmentFerias
 import com.zamfir.maxcalculadora.view.fragment.FragmentMeta
 import com.zamfir.maxcalculadora.view.fragment.FragmentTrimestral
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     var toolbar : MaterialToolbar? = null
-    private var salaryIsShowing = false
-    private var salarioTextView : TextView? = null
-    private var nomeTextView : TextView? = null
+
+    private var salary : String? = null
+    private var name : String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setSplashScreen()
+
+        setFirstTimeActivityCalling()
+
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         toolbar = binding.toolbar
 
-         binding.navigationDrawer.getHeaderView(0).also{
-             salarioTextView = it.findViewById(R.id.salario_usuario)
-             nomeTextView = it.findViewById(R.id.nome_usuario)
+        binding.navigationDrawer.setCheckedItem(binding.navigationDrawer.menu[0].itemId)
+
+        if(!salary.isNullOrBlank()){
+            setHeaderValues(salary, name)
+            goToTrimestral(Bundle().apply {
+                putString("salario", salary)
+            })
         }
-        salarioTextView?.text = getSalary()
-        nomeTextView?.text = getNome()
+
+        configNavigationDrawer()
+
+        salaryVisibilityConfig()
+    }
+
+    private fun setFirstTimeActivityCalling() {
+        val activityResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
+            if (activityResult.resultCode == RESULT_OK) {
+                activityResult.data?.getBundleExtra("bundle")?.let { bundle ->
+
+                    setHeaderValues(bundle.getString(Constants.SHARED_SALARY_KEY), bundle.getString(Constants.SHARED_NAME_KEY))
+
+                    goToTrimestral(Bundle().apply {
+                        putString("salario", bundle.getString(Constants.SHARED_SALARY_KEY))
+                    })
+                }
+            }
+        }
+
+        if (getSalary().isBlank()) {
+            activityResult.launch(Intent(this, FirstAccessActivity::class.java))
+        }
+    }
+
+    private fun setSplashScreen() {
+        installSplashScreen().apply {
+            CoroutineScope(Dispatchers.IO).launch {
+                salary = getSalary()
+                name = getNome()
+                delay(3000)
+            }
+
+            setKeepOnScreenCondition {
+                salary.isNullOrBlank()
+            }
+        }
+    }
+
+    private fun setHeaderValues(salario : String?, nome : String?) {
+        binding.navigationDrawer.getHeaderView(0).also {
+            it.findViewById<TextView>(R.id.salario_usuario).text = salario ?: ""
+            it.findViewById<TextView>(R.id.nome_usuario).text = nome ?: ""
+        }
+    }
+
+    fun configNavigationDrawer() {
+
+        binding.toolbar.navigationIcon = AppCompatResources.getDrawable(this, R.drawable.baseline_menu_24)
 
         val bundleSalario = Bundle().apply {
-            putString("salario", salarioTextView?.text.toString())
-        }
-
-        if(salarioTextView?.text.isNullOrBlank()){
-            binding.toolbar.navigationIcon = null
-            supportFragmentManager.commit {
-                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                replace(R.id.nav_host_fragment, FirstTimeFragment())
-                addToBackStack(null)
-            }
-        }else{
-            binding.navigationDrawer.setCheckedItem(binding.navigationDrawer.menu[0].itemId)
-            goToTrimestral(bundleSalario)
+            putString("salario", binding.navigationDrawer.getHeaderView(0).findViewById<TextView>(R.id.salario_usuario).text?.toString())
         }
 
         binding.toolbar.setNavigationOnClickListener {
@@ -64,11 +115,12 @@ class MainActivity : AppCompatActivity() {
 
         binding.navigationDrawer.setNavigationItemSelectedListener { menuItem ->
             menuItem.isChecked = true
-            when(menuItem.itemId){
+            when (menuItem.itemId) {
                 binding.navigationDrawer.menu.findItem(R.id.trimestral).itemId -> {
                     goToTrimestral(bundleSalario)
                     binding.drawerLayout.close()
                 }
+
                 binding.navigationDrawer.menu.findItem(R.id.meta).itemId -> {
                     supportFragmentManager.commit {
                         setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -77,6 +129,7 @@ class MainActivity : AppCompatActivity() {
                         binding.drawerLayout.close()
                     }
                 }
+
                 binding.navigationDrawer.menu.findItem(R.id.ferias).itemId -> {
                     supportFragmentManager.commit {
                         setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -88,8 +141,6 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
-
-        salaryVisibilityConfig()
     }
 
     private fun goToTrimestral(bundleSalario: Bundle) {
@@ -103,12 +154,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun salaryVisibilityConfig() {
-        val salaryHidder = binding.navigationDrawer.getHeaderView(0).findViewById<CardView>(R.id.salary_hide)
-        salaryHidder.show(!salaryIsShowing)
 
-        binding.navigationDrawer.getHeaderView(0).findViewById<ImageButton>(R.id.blur_salary_btn)?.setOnClickListener {
-            salaryHidder.show(!salaryHidder.isVisible)
-        }
     }
 
     //TODO -> Passar para uma viewModel

@@ -5,8 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Historico(
-    val idHistorico : Int,
-    val descricao : String,
+    val idTipoHistorico : Int,
     val valor : String
 ){
     @PrimaryKey(autoGenerate = true) var id : Int = 0

@@ -27,7 +27,7 @@ val repositoryModule = module {
 }
 
 val useCaseModule = module{
-    single { TrimestreUseCase(get())}
+    single { TrimestreUseCase(get(), get(named(Constants.IO_DISPATCHER)))}
     single { UserUseCase(get())}
 }
 

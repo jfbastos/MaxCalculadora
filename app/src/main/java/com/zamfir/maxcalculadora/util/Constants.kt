@@ -7,5 +7,6 @@ class Constants {
         const val SHARED_FILE = "maxCalculadora_shared"
         const val SHARED_SALARY_KEY = "SALARIO_KEY"
         const val SHARED_NAME_KEY = "NAME_KEY"
+        const val SALARIO_MINIMO = 1320.0
     }
 }

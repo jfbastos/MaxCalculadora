@@ -2,23 +2,29 @@ package com.zamfir.maxcalculadora.view.fragment
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
+import com.zamfir.maxcalculadora.R
+import com.zamfir.maxcalculadora.data.model.Trimestre
 import com.zamfir.maxcalculadora.databinding.FragmentTrimestralBinding
+import com.zamfir.maxcalculadora.util.doubleToStringWithTwoDecimals
 import com.zamfir.maxcalculadora.util.setMonetary
 import com.zamfir.maxcalculadora.util.show
 import com.zamfir.maxcalculadora.view.activity.MainActivity
 import com.zamfir.maxcalculadora.viewmodel.TrimestreViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.math.BigDecimal
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 
 class FragmentTrimestral : Fragment() {
 
     private lateinit var binding: FragmentTrimestralBinding
     private var salario : String? = ""
+    private var trimestre : Trimestre? = null
 
     private val viewModel : TrimestreViewModel by viewModel()
 
@@ -34,17 +40,24 @@ class FragmentTrimestral : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         (requireActivity() as MainActivity).toolbar?.title = "Trimestral"
+        if((requireActivity() as MainActivity).toolbar?.navigationIcon == null){
+            (requireActivity() as MainActivity).configNavigationDrawer()
+        }
 
-        setTextFields()
+        viewModel.getUltimoValor()
+
+        viewModel.ultimoCalculo.observe(viewLifecycleOwner) { trimestre ->
+            this.trimestre = trimestre
+            setTextFields(trimestre)
+        }
 
         setCalculoParcial()
 
         viewModel.trimestralState.observe(viewLifecycleOwner){ state ->
-            Log.d("TrimestralUI", "Result : ${state.result}")
-
             state.result?.let {
-                Snackbar.make(requireView(), "Meta : R$ ${String.format("%.2f", state.result)}.", Snackbar.LENGTH_SHORT).show()
-
+                val bonificacao = "R$ ${state.result.doubleToStringWithTwoDecimals()}"
+                binding.resultadoPlaceHolder.show(true)
+                binding.txvValorBonificacao.text = bonificacao
             }
         }
 
@@ -71,24 +84,28 @@ class FragmentTrimestral : Fragment() {
     }
 
     private fun setCalculoParcial() {
+        binding.isCalculoParcial.isChecked = trimestre?.isCalculoParcial == true
+
         binding.isCalculoParcial.setOnCheckedChangeListener { _, isOn ->
             binding.layoutMesAdmissao.show(isOn)
         }
 
         binding.infoCalculoParcialBtn.setOnClickListener {
             Snackbar.make(requireView(), "Calculo feito em cima da data de admissão.", Snackbar.LENGTH_SHORT).setAction("Saiba mais") {
-                AlertDialog.Builder(requireContext()).setTitle("Meta parcial").setMessage("O cálculo da meta, será baseada em cima da data da sua admissão.\n\nSerá calculado o valor proporcial ao período.").setPositiveButton("Ok") { dialog, _ ->
+                AlertDialog.Builder(requireContext()).setTitle("Meta parcial").setMessage(getString(R.string.info_calculo_parcial)).setPositiveButton("Ok") { dialog, _ ->
                     dialog.dismiss()
                 }.show()
             }.show()
         }
     }
 
-    private fun setTextFields() {
+    private fun setTextFields(trimestre: Trimestre?) {
         binding.txtFieldSalario.setText(salario ?: "vazio")
-        binding.txtFieldPrimeiroTri.setMonetary("0")
-        binding.txtFieldSegundoTri.setMonetary("0")
-        binding.txtFieldTerceiroTri.setMonetary("0")
-        binding.txtFieldQuartoTri.setMonetary("0")
+        binding.txtFieldPrimeiroTri.setMonetary(trimestre?.valorPrimeiroTrimestre.doubleToStringWithTwoDecimals())
+        binding.txtFieldSegundoTri.setMonetary(trimestre?.valorSegundoTrimestre.doubleToStringWithTwoDecimals())
+        binding.txtFieldTerceiroTri.setMonetary(trimestre?.valorTerceiroTrimestre.doubleToStringWithTwoDecimals())
+        binding.txtFieldQuartoTri.setMonetary(trimestre?.valorQuartoTrimestre.doubleToStringWithTwoDecimals())
+        if(trimestre?.metaAtingida == null) binding.txtFieldMeta.setText("") else binding.txtFieldMeta.setText(String.format("%.2f", (trimestre.metaAtingida * 100)))
+
     }
 }

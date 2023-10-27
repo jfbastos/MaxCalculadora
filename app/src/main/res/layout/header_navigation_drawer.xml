@@ -77,21 +77,13 @@
                 android:textColor="@color/white"
                 android:textStyle="bold"/>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/salary_hide"
-                android:layout_width="150dp"
-                android:layout_height="20dp"
-                android:visibility="visible"
-                app:cardCornerRadius="10dp"
-                android:backgroundTint="@color/gray"/>
-
         </RelativeLayout>
 
         <ImageButton
-            android:id="@+id/blur_salary_btn"
+            android:id="@+id/edit_salary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/baseline_show_24"
+            android:src="@drawable/baseline_mode_edit_24"
             android:background="?attr/colorPrimary"
             android:layout_gravity="center"
             app:layout_constraintTop_toTopOf="parent"

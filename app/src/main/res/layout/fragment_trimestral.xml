@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="12dp"
-    android:orientation="vertical">
+    android:padding="8dp">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layout_salario"
@@ -177,6 +176,45 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/resultado_place_holder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/btn_calcular"
+        app:layout_constraintTop_toBottomOf="@id/calculo_parcial_place_holder"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/txv_valor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Valor a receber : "
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <TextView
+            android:id="@+id/txv_valor_bonificacao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="R$ 0,00"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@id/txv_valor"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Atenção, os valores podem não ser exatos, sendo apenas um valor estimado para bonificação."
+            app:layout_constraintTop_toBottomOf="@id/txv_valor_bonificacao"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/light_red"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <Button
         android:id="@+id/btn_calcular"
         android:layout_width="match_parent"
