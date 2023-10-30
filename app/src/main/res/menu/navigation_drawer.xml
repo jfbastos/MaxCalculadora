@@ -10,7 +10,7 @@
     <item
         android:id="@+id/meta"
         android:icon="@drawable/baseline_location_on_24"
-        android:title="Meta (Dev)"
+        android:title="Anual"
         android:checkable="true"/>
 
     <item
