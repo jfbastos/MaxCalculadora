@@ -5,9 +5,9 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Meta(
-    val meta : Int,
-    val valorPonto : Double,
-    val realizado : Double
+    val mesAdmissao : String,
+    val metaAcancada : Double,
+    val isCalculoParcial : Boolean
 ){
     @PrimaryKey(autoGenerate = true) var id : Int = 0
 }

@@ -4,9 +4,11 @@ import androidx.room.Room
 import com.zamfir.maxcalculadora.data.AppDatabase
 import com.zamfir.maxcalculadora.data.repository.TrimestreRepository
 import com.zamfir.maxcalculadora.data.repository.UserRepository
+import com.zamfir.maxcalculadora.domain.usecase.AnualUseCase
 import com.zamfir.maxcalculadora.domain.usecase.TrimestreUseCase
 import com.zamfir.maxcalculadora.domain.usecase.UserUseCase
 import com.zamfir.maxcalculadora.util.Constants
+import com.zamfir.maxcalculadora.viewmodel.AnualViewModel
 import com.zamfir.maxcalculadora.viewmodel.TrimestreViewModel
 import com.zamfir.maxcalculadora.viewmodel.UserViewModel
 import kotlinx.coroutines.Dispatchers
@@ -29,11 +31,13 @@ val repositoryModule = module {
 val useCaseModule = module{
     single { TrimestreUseCase(get(), get(named(Constants.IO_DISPATCHER)))}
     single { UserUseCase(get())}
+    single { AnualUseCase(get())}
 }
 
 val viewModelModule = module{
     viewModel { TrimestreViewModel(get()) }
     viewModel { UserViewModel(get()) }
+    viewModel { AnualViewModel(get())}
 }
 
 val dataBaseModule = module {

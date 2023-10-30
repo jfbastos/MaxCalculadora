@@ -1,9 +1,7 @@
 package com.zamfir.maxcalculadora.viewmodel.state
 
-import com.zamfir.maxcalculadora.data.model.Usuario
-
-data class UserState(
+data class AnualState(
     val isLoading : Boolean = false,
-    val usuario : Usuario? = null,
+    val result : Double? = null,
     val error : Exception? = null
 )

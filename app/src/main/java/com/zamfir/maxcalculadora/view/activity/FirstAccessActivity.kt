@@ -31,33 +31,24 @@ class FirstAccessActivity : AppCompatActivity() {
         }
 
         binding.fabNext.setOnClickListener {
-            if(binding.salario.text.toString().convertMonetaryToDouble() < Constants.SALARIO_MINIMO){
-                Snackbar.make(binding.root, "Seu salário deverá ser maior que um salário mínimo.",Snackbar.LENGTH_SHORT)
-                    .setBackgroundTint(Color.WHITE)
-                    .setTextColor(MaterialColors.getColor(this, org.koin.android.R.attr.colorPrimary, Color.BLACK))
-                    .show()
-                return@setOnClickListener
-            }
-
-            if(binding.nome.text.toString().length < 4){
-                Snackbar.make(binding.root, "Seu nome deve ter ao menos 4 caracteres.",Snackbar.LENGTH_SHORT)
-                    .setBackgroundTint(Color.WHITE)
-                    .setTextColor(MaterialColors.getColor(this, org.koin.android.R.attr.colorPrimary, Color.BLACK))
-                    .show()
-                return@setOnClickListener
-            }
-
             viewModel.salvarDadosUsuario(binding.salario.text.toString(), binding.nome.text.toString())
         }
 
         viewModel.userState.observe(this) { userState ->
-            if (userState.isSuccess) {
+            userState.usuario?.let {
                 val bundle = Bundle().apply {
                     putString(Constants.SHARED_NAME_KEY, binding.nome.text.toString())
                     putString(Constants.SHARED_SALARY_KEY, binding.salario.text.toString())
                 }
                 setResult(Activity.RESULT_OK, Intent().putExtra("bundle", bundle))
                 finish()
+            }
+
+            userState.error?.let {
+                Snackbar.make(binding.root, "${it.message}" ,Snackbar.LENGTH_SHORT)
+                    .setBackgroundTint(Color.WHITE)
+                    .setTextColor(MaterialColors.getColor(this, org.koin.android.R.attr.colorPrimary, Color.BLACK))
+                    .show()
             }
         }
     }
