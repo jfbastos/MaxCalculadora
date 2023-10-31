@@ -1,15 +1,10 @@
 package com.zamfir.maxcalculadora.view.activity
 
-import android.animation.ObjectAnimator
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
@@ -20,21 +15,13 @@ import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
 import com.zamfir.maxcalculadora.R
-import com.zamfir.maxcalculadora.data.model.Usuario
 import com.zamfir.maxcalculadora.databinding.ActivityMainBinding
 import com.zamfir.maxcalculadora.util.Constants
-import com.zamfir.maxcalculadora.util.doubleToStringWithTwoDecimals
 import com.zamfir.maxcalculadora.view.dialog.EditUserBottomSheet
 import com.zamfir.maxcalculadora.view.fragment.FragmentFerias
 import com.zamfir.maxcalculadora.view.fragment.FragmentMeta
 import com.zamfir.maxcalculadora.view.fragment.FragmentTrimestral
-import com.zamfir.maxcalculadora.view.listener.UserEditListener
-import com.zamfir.maxcalculadora.viewmodel.UserViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
 
@@ -45,11 +32,10 @@ class MainActivity : AppCompatActivity() {
     private var name : String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setSplashScreen()
-
         setFirstTimeActivityCalling()
 
-        super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

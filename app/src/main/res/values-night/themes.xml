@@ -2,6 +2,12 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.MaxCalculadora" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorPrimary">@color/dark_primary_color_accent</item>
+    </style>
+
+    <style name="Theme.MaxCalculadora" parent="Base.Theme.MaxCalculadora" />
+
+    <style name="Theme.App" parent="Theme.MaterialComponents.DayNight">
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 </resources>

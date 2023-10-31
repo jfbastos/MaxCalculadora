@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <style name="MyInputTextStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="colorAccent">@color/white</item>
         <item name="prefixTextColor">@color/white</item>
@@ -8,5 +7,4 @@
         <item name="placeholderTextColor">@color/white</item>
         <item name="boxStrokeColor">@color/white</item>
     </style>
-
 </resources>

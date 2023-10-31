@@ -60,5 +60,5 @@ dependencies {
     implementation("io.insert-koin:koin-androidx-workmanager:3.1.5")
     implementation("io.insert-koin:koin-androidx-navigation:3.1.5")
     implementation("io.insert-koin:koin-androidx-compose:3.1.5")
-    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("androidx.core:core-splashscreen:1.0.0")
 }
