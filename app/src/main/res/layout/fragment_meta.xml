@@ -136,7 +136,8 @@
             android:text="Atenção, os valores podem não ser exatos, sendo apenas um valor estimado para bonificação."
             app:layout_constraintTop_toBottomOf="@id/txv_valor_bonificacao"
             android:layout_marginTop="8dp"
-            android:textColor="@color/light_red"
+            android:paddingHorizontal="12dp"
+            android:textColor="?attr/colorPrimary"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"/>
 
