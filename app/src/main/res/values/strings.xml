@@ -3,4 +3,21 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="info_calculo_parcial">O cálculo da meta, será baseada em cima da data da sua admissão.\n\nSe você trabalhou 15 dias ou mais no mês, ele será considerado no cálculo, se foi menos que 15 dias, deverá considerar o mês seguinte. \n\nPor exemplo: Data de admissão 10/02, logo você deverá informar que o mês de admissão foi em Fevereiro.</string>
+    <string name="sucess_edit_user_msg">Dados editados com sucesso.</string>
+    <string name="toolbar_title_ferias">Férias</string>
+    <string name="toolbar_title_meta">Meta anual</string>
+    <string name="btn_saiba_mais_snackbar">Saiba mais</string>
+    <string name="info_snackbar_parcial">Calculo feito em cima da data de admissão.</string>
+    <string name="title_dialog_parcial">Meta parcial</string>
+    <string name="ok">Ok</string>
+    <string name="toolbar_title_trimestral">Trimestral</string>
+    <string name="title_msg_first_access">Olá,\nbem-vindo ao MaxCalculadora</string>
+    <string name="msg_first_access">O app irá lhe auxiliar a realizar alguns cálculos, bem como o de bonificação trimestral, bonificação anual e férias.\n\nPara isso, precisaremos de duas informações suas.</string>
+    <string name="txv_text_seu_salario_bruto">Seu salário base (bruto):</string>
+    <string name="txv_text_seu_nome">e claro, seu nome:</string>
+    <string name="go_to_next_screen_description">Go to next screen</string>
+    <string name="txv_bottom_sheet_title">Editar dados</string>
+    <string name="nome_hint">Nome</string>
+    <string name="salario_hint">Salário</string>
+    <string name="btn_salvar_text">Salvar</string>
 </resources>

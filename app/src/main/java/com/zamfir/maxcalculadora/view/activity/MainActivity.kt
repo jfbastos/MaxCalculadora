@@ -1,6 +1,5 @@
 package com.zamfir.maxcalculadora.view.activity
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
@@ -12,16 +11,18 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.get
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
 import com.zamfir.maxcalculadora.R
+import com.zamfir.maxcalculadora.data.model.Usuario
 import com.zamfir.maxcalculadora.databinding.ActivityMainBinding
 import com.zamfir.maxcalculadora.util.Constants
+import com.zamfir.maxcalculadora.util.doubleToMonetary
 import com.zamfir.maxcalculadora.view.dialog.EditUserBottomSheet
 import com.zamfir.maxcalculadora.view.fragment.FragmentFerias
 import com.zamfir.maxcalculadora.view.fragment.FragmentMeta
 import com.zamfir.maxcalculadora.view.fragment.FragmentTrimestral
-import kotlinx.coroutines.launch
+import com.zamfir.maxcalculadora.viewmodel.UserViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,22 +32,37 @@ class MainActivity : AppCompatActivity() {
     private var salary : String? = null
     private var name : String? = null
 
+    private val userViewModel : UserViewModel by viewModel()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setSplashScreen()
-        setFirstTimeActivityCalling()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
+
+        userViewModel.editUserState.observe(this){
+            if(it.usuario != null){
+                setDefaultScreen(it.usuario)
+            }else{
+                setFirstTimeActivityCalling()
+            }
+        }
+    }
+
+    private fun setDefaultScreen(usuario: Usuario) {
+        salary = usuario.salario.doubleToMonetary()
+        name = usuario.nome
+
         setContentView(binding.root)
 
         toolbar = binding.toolbar
 
         binding.navigationDrawer.setCheckedItem(binding.navigationDrawer.menu[0].itemId)
 
-        if(!salary.isNullOrBlank()){
+        if (!salary.isNullOrBlank()) {
             setHeaderValues(salary, name)
             goToTrimestral(Bundle().apply {
-                putString("salario", salary)
+                putString(Constants.BUNDLE_SALARY_KEY, salary)
             })
         }
 
@@ -57,8 +73,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         configNavigationDrawer()
-
-        salaryVisibilityConfig()
     }
 
     private fun setFirstTimeActivityCalling() {
@@ -68,24 +82,24 @@ class MainActivity : AppCompatActivity() {
 
                     setHeaderValues(bundle.getString(Constants.SHARED_SALARY_KEY), bundle.getString(Constants.SHARED_NAME_KEY))
 
+                    salary = bundle.getString(Constants.SHARED_SALARY_KEY)
+                    name = bundle.getString(Constants.SHARED_NAME_KEY)
+
                     goToTrimestral(Bundle().apply {
-                        putString("salario", bundle.getString(Constants.SHARED_SALARY_KEY))
+                        putString(Constants.BUNDLE_SALARY_KEY, salary)
                     })
                 }
             }
         }
 
-        if (getSalary().isBlank()) {
-            activityResult.launch(Intent(this, FirstAccessActivity::class.java))
+        if (salary.isNullOrBlank()) {
+            activityResult.launch(Intent(this@MainActivity, FirstAccessActivity::class.java))
         }
     }
 
     private fun setSplashScreen() {
         installSplashScreen().apply {
-            lifecycleScope.launch {
-                salary = getSalary()
-                name = getNome()
-            }
+           userViewModel.getDadosUsuario()
         }
     }
 
@@ -97,12 +111,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun configNavigationDrawer() {
-
         binding.toolbar.navigationIcon = AppCompatResources.getDrawable(this, R.drawable.baseline_menu_24)
-
-        val bundleSalario = Bundle().apply {
-            putString("salario", binding.navigationDrawer.getHeaderView(0).findViewById<TextView>(R.id.salario_usuario).text?.toString())
-        }
 
         binding.toolbar.setNavigationOnClickListener {
             binding.drawerLayout.open()
@@ -112,25 +121,37 @@ class MainActivity : AppCompatActivity() {
             menuItem.isChecked = true
             when (menuItem.itemId) {
                 binding.navigationDrawer.menu.findItem(R.id.trimestral).itemId -> {
-                    goToTrimestral(bundleSalario)
+                    goToTrimestral(Bundle().apply {
+                        putString(Constants.BUNDLE_SALARY_KEY, binding.navigationDrawer.getHeaderView(0).findViewById<TextView>(R.id.salario_usuario).text?.toString())
+                    })
                     binding.drawerLayout.close()
                 }
 
                 binding.navigationDrawer.menu.findItem(R.id.meta).itemId -> {
-                    goToMeta(bundleSalario)
+                    goToMeta(Bundle().apply {
+                        putString(Constants.BUNDLE_SALARY_KEY, binding.navigationDrawer.getHeaderView(0).findViewById<TextView>(R.id.salario_usuario).text?.toString())
+                    })
                     binding.drawerLayout.close()
                 }
 
                 binding.navigationDrawer.menu.findItem(R.id.ferias).itemId -> {
-                    supportFragmentManager.commit {
-                        setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        replace(R.id.nav_host_fragment, FragmentFerias())
-                        addToBackStack(null)
-                        binding.drawerLayout.close()
-                    }
+                    goToFerias(Bundle().apply {
+                        putString(Constants.BUNDLE_SALARY_KEY, binding.navigationDrawer.getHeaderView(0).findViewById<TextView>(R.id.salario_usuario).text?.toString())
+                    })
+                    binding.drawerLayout.close()
                 }
             }
             true
+        }
+    }
+
+    private fun goToFerias(bundleSalario: Bundle) {
+        val fragment = FragmentFerias()
+        fragment.arguments = bundleSalario
+        supportFragmentManager.commit {
+            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            replace(R.id.nav_host_fragment, fragment)
+            addToBackStack(null)
         }
     }
 
@@ -154,21 +175,4 @@ class MainActivity : AppCompatActivity() {
             addToBackStack(null)
         }
     }
-
-    private fun salaryVisibilityConfig() {
-
-    }
-
-    //TODO -> Passar para uma viewModel
-    private fun getSalary() : String{
-        val sharedPreferences = this.getSharedPreferences(Constants.SHARED_FILE, Context.MODE_PRIVATE)
-        return sharedPreferences.getString(Constants.SHARED_SALARY_KEY, "") ?: ""
-    }
-
-    private fun getNome() : String{
-        val sharedPreferences = this.getSharedPreferences(Constants.SHARED_FILE, Context.MODE_PRIVATE)
-        return sharedPreferences.getString(Constants.SHARED_NAME_KEY, "") ?: ""
-    }
-
-
 }

@@ -2,7 +2,6 @@ package com.zamfir.maxcalculadora.view.fragment
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,17 +13,14 @@ import com.zamfir.maxcalculadora.data.model.Trimestre
 import com.zamfir.maxcalculadora.data.model.Usuario
 import com.zamfir.maxcalculadora.databinding.FragmentTrimestralBinding
 import com.zamfir.maxcalculadora.domain.model.TrimestreVO
+import com.zamfir.maxcalculadora.util.Constants
 import com.zamfir.maxcalculadora.util.doubleToStringWithTwoDecimals
 import com.zamfir.maxcalculadora.util.setMonetary
 import com.zamfir.maxcalculadora.util.show
 import com.zamfir.maxcalculadora.view.activity.MainActivity
 import com.zamfir.maxcalculadora.view.listener.UserEditListener
 import com.zamfir.maxcalculadora.viewmodel.TrimestreViewModel
-import com.zamfir.maxcalculadora.viewmodel.UserViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.math.BigDecimal
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
 
 class FragmentTrimestral : Fragment() {
 
@@ -36,14 +32,15 @@ class FragmentTrimestral : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentTrimestralBinding.inflate(inflater)
-        salario = arguments?.getString("salario", "")
+        salario = arguments?.getString(Constants.BUNDLE_SALARY_KEY, "")
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (requireActivity() as MainActivity).toolbar?.title = "Trimestral"
+        (requireActivity() as MainActivity).toolbar?.title = getString(R.string.toolbar_title_trimestral)
+
         if((requireActivity() as MainActivity).toolbar?.navigationIcon == null){
             (requireActivity() as MainActivity).configNavigationDrawer()
         }
@@ -70,17 +67,7 @@ class FragmentTrimestral : Fragment() {
         }
 
         binding.btnCalcular.setOnClickListener {
-            viewModel.getBonificacaoTrimestral(
-                TrimestreVO(
-                    isCalculoParcial = binding.isCalculoParcial.isChecked,
-                    valorPrimeiroTrimestre = binding.txtFieldPrimeiroTri.text.toString(),
-                    valorSegundoTrimestre = binding.txtFieldSegundoTri.text.toString(),
-                    valorTerceiroTrimestre = binding.txtFieldTerceiroTri.text.toString(),
-                    valorQuartoTrimestre = binding.txtFieldQuartoTri.text.toString(),
-                    metaAtingida = binding.txtFieldMeta.text.toString(),
-                    dataAdmissao = binding.exposedMesAdmissao.text.toString()
-                )
-            )
+            viewModel.getBonificacaoTrimestral(setTrimestreVo())
         }
 
         UserEditListener.onReceiver(object : UserEditListener {
@@ -95,6 +82,16 @@ class FragmentTrimestral : Fragment() {
         })
     }
 
+    private fun setTrimestreVo() = TrimestreVO(
+        isCalculoParcial = binding.isCalculoParcial.isChecked,
+        valorPrimeiroTrimestre = binding.txtFieldPrimeiroTri.text.toString(),
+        valorSegundoTrimestre = binding.txtFieldSegundoTri.text.toString(),
+        valorTerceiroTrimestre = binding.txtFieldTerceiroTri.text.toString(),
+        valorQuartoTrimestre = binding.txtFieldQuartoTri.text.toString(),
+        metaAtingida = binding.txtFieldMeta.text.toString(),
+        dataAdmissao = binding.exposedMesAdmissao.text.toString()
+    )
+
     private fun setCalculoParcial() {
         binding.isCalculoParcial.isChecked = trimestre?.isCalculoParcial == true
 
@@ -103,8 +100,8 @@ class FragmentTrimestral : Fragment() {
         }
 
         binding.infoCalculoParcialBtn.setOnClickListener {
-            Snackbar.make(requireView(), "Calculo feito em cima da data de admissão.", Snackbar.LENGTH_SHORT).setAction("Saiba mais") {
-                AlertDialog.Builder(requireContext()).setTitle("Meta parcial").setMessage(getString(R.string.info_calculo_parcial)).setPositiveButton("Ok") { dialog, _ ->
+            Snackbar.make(requireView(),  getString(R.string.info_snackbar_parcial), Snackbar.LENGTH_SHORT).setAction(getString(R.string.btn_saiba_mais_snackbar)) {
+                AlertDialog.Builder(requireContext()).setTitle(getString(R.string.title_dialog_parcial)).setMessage(getString(R.string.info_calculo_parcial)).setPositiveButton(getString(R.string.ok)) { dialog, _ ->
                     dialog.dismiss()
                 }.show()
             }.show()
