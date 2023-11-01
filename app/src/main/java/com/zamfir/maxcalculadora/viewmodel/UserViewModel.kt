@@ -1,6 +1,5 @@
 package com.zamfir.maxcalculadora.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,10 +13,6 @@ class UserViewModel(private val userCase : UserUseCase) : ViewModel(){
     private val _userSate = MutableLiveData<UserState>()
     val userState : LiveData<UserState> get() = _userSate
 
-    private val _editUserState = MutableLiveData<UserState>()
-    val editUserState : LiveData<UserState> get() = _editUserState
-
-
     fun salvarDadosUsuario(salario : String, nome : String) = viewModelScope.launch {
         try{
             _userSate.value = UserState(isLoading = true)
@@ -26,11 +21,4 @@ class UserViewModel(private val userCase : UserUseCase) : ViewModel(){
             _userSate.value = UserState(error = e)
         }
     }
-
-    fun getDadosUsuario() = viewModelScope.launch {
-        _editUserState.value = UserState(usuario = userCase())
-    }
-
-
-
 }

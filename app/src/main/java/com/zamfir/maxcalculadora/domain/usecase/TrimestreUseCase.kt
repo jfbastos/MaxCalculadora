@@ -58,7 +58,6 @@ class TrimestreUseCase(private val repository: TrimestreRepository, private val 
         }
     }
 
-
     suspend fun obterDadosSalvos() : Trimestre? = withContext(dispatcher){
       repository.getUltimoValor()
     }

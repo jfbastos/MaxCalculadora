@@ -4,14 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.zamfir.maxcalculadora.R
+import com.zamfir.maxcalculadora.data.model.Usuario
 import com.zamfir.maxcalculadora.databinding.FragmentFeriasBinding
 import com.zamfir.maxcalculadora.util.Constants
 import com.zamfir.maxcalculadora.util.doubleToMonetary
+import com.zamfir.maxcalculadora.util.doubleToStringWithTwoDecimals
 import com.zamfir.maxcalculadora.util.setMonetary
 import com.zamfir.maxcalculadora.util.show
 import com.zamfir.maxcalculadora.view.activity.MainActivity
+import com.zamfir.maxcalculadora.view.listener.UserEditListener
 import com.zamfir.maxcalculadora.viewmodel.FeriasViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -71,6 +75,17 @@ class FragmentFerias : Fragment() {
         binding.btnCalcular.setOnClickListener {
             viewModel.calculaFerias(diasFerias = getDiasFerias(), isAbono = binding.isAbono.isChecked, isAdiantamento = binding.isAdiantamentoDecimo.isChecked)
         }
+
+        UserEditListener.onReceiver(object : UserEditListener {
+            override fun onUpdateUser(usuario: Usuario) {
+                binding.txtFieldSalario.setMonetary(usuario.salario.doubleToStringWithTwoDecimals())
+                (requireActivity() as MainActivity).setHeaderValues(salario = "${binding.txtFieldSalario.text}", nome = usuario.nome)
+            }
+
+            override fun onError(e: Exception) {
+                Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun getDiasFerias() = binding.txtFieldDiasFerias.text.toString().takeIf { it.isNotBlank() }?.toInt() ?: 30
