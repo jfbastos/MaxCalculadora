@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.snackbar.Snackbar
+import com.zamfir.maxcalculadora.R
 import com.zamfir.maxcalculadora.databinding.EditUserBottomSheetBinding
 import com.zamfir.maxcalculadora.util.doubleToStringWithTwoDecimals
 import com.zamfir.maxcalculadora.util.setMonetary
@@ -27,7 +28,7 @@ class EditUserBottomSheet : BottomSheetDialogFragment() {
         const val TAG = "ModalBottomSheet"
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = EditUserBottomSheetBinding.inflate(inflater)
         return binding.root
     }
@@ -46,7 +47,7 @@ class EditUserBottomSheet : BottomSheetDialogFragment() {
 
         viewModel.userState.observe(viewLifecycleOwner){ userState ->
             userState.usuario?.let {
-                Snackbar.make(binding.root, "Dados editados com sucesso." , Snackbar.LENGTH_SHORT)
+                Snackbar.make(binding.root, getString(R.string.sucess_edit_user_msg) , Snackbar.LENGTH_SHORT)
                     .setBackgroundTint(Color.WHITE)
                     .setTextColor(MaterialColors.getColor(requireContext(), org.koin.android.R.attr.colorPrimary, Color.BLACK))
                     .show()

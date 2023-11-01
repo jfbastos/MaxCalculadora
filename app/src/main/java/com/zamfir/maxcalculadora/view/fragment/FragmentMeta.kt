@@ -10,6 +10,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.zamfir.maxcalculadora.R
 import com.zamfir.maxcalculadora.databinding.FragmentMetaBinding
 import com.zamfir.maxcalculadora.domain.model.MetaVO
+import com.zamfir.maxcalculadora.util.Constants
 import com.zamfir.maxcalculadora.util.doubleToStringWithTwoDecimals
 import com.zamfir.maxcalculadora.util.show
 import com.zamfir.maxcalculadora.view.activity.MainActivity
@@ -24,16 +25,16 @@ class FragmentMeta : Fragment() {
 
     private val viewModel : AnualViewModel by viewModel()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentMetaBinding.inflate(inflater)
-        salario = arguments?.getString("salario", "")
+        salario = arguments?.getString(Constants.BUNDLE_SALARY_KEY, "")
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (requireActivity() as MainActivity).toolbar?.title = "Meta anual"
+        (requireActivity() as MainActivity).toolbar?.title = getString(R.string.toolbar_title_meta)
 
         setTextFields()
 
@@ -67,8 +68,8 @@ class FragmentMeta : Fragment() {
         }
 
         binding.infoCalculoParcialBtn.setOnClickListener {
-            Snackbar.make(requireView(), "Calculo feito em cima da data de admissão.", Snackbar.LENGTH_SHORT).setAction("Saiba mais") {
-                AlertDialog.Builder(requireContext()).setTitle("Meta parcial").setMessage(getString(R.string.info_calculo_parcial)).setPositiveButton("Ok") { dialog, _ ->
+            Snackbar.make(requireView(), getString(R.string.info_snackbar_parcial), Snackbar.LENGTH_SHORT).setAction(getString(R.string.btn_saiba_mais_snackbar)) {
+                AlertDialog.Builder(requireContext()).setTitle(getString(R.string.title_dialog_parcial)).setMessage(getString(R.string.info_calculo_parcial)).setPositiveButton(getString(R.string.ok)) { dialog, _ ->
                     dialog.dismiss()
                 }.show()
             }.show()

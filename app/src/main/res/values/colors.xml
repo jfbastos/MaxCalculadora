@@ -8,4 +8,7 @@
     <color name="dark_primary_color_accent">#9A7ADD</color>
     <color name="background">#27000000</color>
     <color name="light_red">#EF9A9A</color>
+    <color name="dark_red">#8F1C1C</color>
+    <color name="primary_color">#FF6750A4</color>
+    <color name="primary_color_very_light">#9FA8DA</color>
 </resources>

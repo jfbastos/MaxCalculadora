@@ -15,7 +15,7 @@ import kotlin.jvm.Throws
 class TrimestreUseCase(private val repository: TrimestreRepository, private val dispatcher: CoroutineDispatcher) {
 
     @Throws
-    suspend operator fun invoke(trimestreVo: TrimestreVO) : Double{
+    suspend operator fun invoke(trimestreVo: TrimestreVO): Double {
 
         isTodosOsCamposValidos(trimestreVo)
 
@@ -23,11 +23,7 @@ class TrimestreUseCase(private val repository: TrimestreRepository, private val 
 
         repository.saveTrimestre(trimestre)
 
-        val result = calculaBonificacao(trimestre)
-
-        repository.saveHistoricResult(result)
-
-        return result
+        return calculaBonificacao(trimestre)
     }
 
 
