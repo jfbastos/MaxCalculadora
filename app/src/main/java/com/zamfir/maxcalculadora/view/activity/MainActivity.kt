@@ -1,5 +1,6 @@
 package com.zamfir.maxcalculadora.view.activity
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
@@ -11,17 +12,17 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.get
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
 import com.zamfir.maxcalculadora.R
-import com.zamfir.maxcalculadora.data.model.Usuario
 import com.zamfir.maxcalculadora.databinding.ActivityMainBinding
 import com.zamfir.maxcalculadora.util.Constants
-import com.zamfir.maxcalculadora.util.doubleToMonetary
 import com.zamfir.maxcalculadora.view.dialog.EditUserBottomSheet
 import com.zamfir.maxcalculadora.view.fragment.FragmentFerias
 import com.zamfir.maxcalculadora.view.fragment.FragmentMeta
 import com.zamfir.maxcalculadora.view.fragment.FragmentTrimestral
 import com.zamfir.maxcalculadora.viewmodel.UserViewModel
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
@@ -37,42 +38,36 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setSplashScreen()
-
         binding = ActivityMainBinding.inflate(layoutInflater)
 
-        userViewModel.editUserState.observe(this){
-            if(it.usuario != null){
-                setDefaultScreen(it.usuario)
-            }else{
-                setFirstTimeActivityCalling()
-            }
+        if (salary.isNullOrBlank()) {
+            setFirstTimeActivityCalling()
+        }else{
+            setDefaultScreen()
         }
-    }
-
-    private fun setDefaultScreen(usuario: Usuario) {
-        salary = usuario.salario.doubleToMonetary()
-        name = usuario.nome
 
         setContentView(binding.root)
+    }
 
+    private fun setDefaultScreen() {
         toolbar = binding.toolbar
 
         binding.navigationDrawer.setCheckedItem(binding.navigationDrawer.menu[0].itemId)
-
-        if (!salary.isNullOrBlank()) {
-            setHeaderValues(salary, name)
-            goToTrimestral(Bundle().apply {
-                putString(Constants.BUNDLE_SALARY_KEY, salary)
-            })
-        }
-
-        val modalBottomSheet = EditUserBottomSheet()
+        setHeaderValues(salary, name)
 
         binding.navigationDrawer.getHeaderView(0).findViewById<ImageButton>(R.id.edit_salary).setOnClickListener {
-            modalBottomSheet.show(supportFragmentManager, EditUserBottomSheet.TAG)
+            EditUserBottomSheet.newInstance(salary ?: "", name ?: "") { salary, name ->
+                this.salary = salary
+                this.name = name
+                userViewModel.salvarDadosUsuario(salary, name)
+            }.show(supportFragmentManager, EditUserBottomSheet.TAG)
         }
 
         configNavigationDrawer()
+
+        goToTrimestral(Bundle().apply {
+            putString(Constants.BUNDLE_SALARY_KEY, salary)
+        })
     }
 
     private fun setFirstTimeActivityCalling() {
@@ -85,21 +80,19 @@ class MainActivity : AppCompatActivity() {
                     salary = bundle.getString(Constants.SHARED_SALARY_KEY)
                     name = bundle.getString(Constants.SHARED_NAME_KEY)
 
-                    goToTrimestral(Bundle().apply {
-                        putString(Constants.BUNDLE_SALARY_KEY, salary)
-                    })
+                    setDefaultScreen()
                 }
             }
         }
-
-        if (salary.isNullOrBlank()) {
-            activityResult.launch(Intent(this@MainActivity, FirstAccessActivity::class.java))
-        }
+        activityResult.launch(Intent(this@MainActivity, FirstAccessActivity::class.java))
     }
 
     private fun setSplashScreen() {
         installSplashScreen().apply {
-           userViewModel.getDadosUsuario()
+          lifecycleScope.launch{
+              salary = getSalary()
+              name = getNome()
+          }
         }
     }
 
@@ -174,5 +167,15 @@ class MainActivity : AppCompatActivity() {
             replace(R.id.nav_host_fragment, fragment)
             addToBackStack(null)
         }
+    }
+
+    private fun getSalary() : String{
+        val sharedPreferences = this.getSharedPreferences(Constants.SHARED_FILE, Context.MODE_PRIVATE)
+        return sharedPreferences.getString(Constants.SHARED_SALARY_KEY, "") ?: ""
+    }
+
+    private fun getNome() : String{
+        val sharedPreferences = this.getSharedPreferences(Constants.SHARED_FILE, Context.MODE_PRIVATE)
+        return sharedPreferences.getString(Constants.SHARED_NAME_KEY, "") ?: ""
     }
 }

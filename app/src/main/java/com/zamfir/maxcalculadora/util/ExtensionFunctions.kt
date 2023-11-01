@@ -12,9 +12,13 @@ fun View.show(isVisible : Boolean){
 }
 
 fun TextInputEditText.setMonetary(text : String){
-    this.apply {
-        addTextChangedListener(MoneyTextWatcher(this))
-        setText(text)
+    try{
+        this.apply {
+            addTextChangedListener(MoneyTextWatcher(this))
+            setText(text)
+        }
+    }catch (e : Exception){
+        e.printStackTrace()
     }
 }
 
