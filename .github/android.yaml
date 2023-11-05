@@ -2,7 +2,7 @@ name: Android CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "feat/add_tests_cases" ]
   pull_request:
     branches: [ "feat/add_tests_cases" ]
 
