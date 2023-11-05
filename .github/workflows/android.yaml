@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "feat/add_tests_cases" ]
   pull_request:
-    branches: [ "feat/add_tests_cases" ]
+    branches: [ "master" ]
 
 jobs:
   build:
