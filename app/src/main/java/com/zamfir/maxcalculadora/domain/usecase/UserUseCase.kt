@@ -7,6 +7,4 @@ class UserUseCase(private val userRespository : UserRepository) {
     fun salvarUsuario(salario : String, nome : String){
         userRespository.saveShared(salario, nome)
     }
-
-
 }
