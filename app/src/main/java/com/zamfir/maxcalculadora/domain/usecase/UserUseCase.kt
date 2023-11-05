@@ -8,7 +8,7 @@ import com.zamfir.maxcalculadora.util.convertMonetaryToDouble
 
 class UserUseCase(private val userRespository : UserRepository) {
 
-    fun salvarUsuario(salario : String, nome : String) : Usuario{
+    fun salvarUsuario(salario : String, nome : String) : Usuario {
         isCamposValidos(salario, nome)
         return userRespository.saveShared(salario, nome)
     }
@@ -22,6 +22,4 @@ class UserUseCase(private val userRespository : UserRepository) {
         if(salario.convertMonetaryToDouble() < Constants.SALARIO_MINIMO) throw CadastroException("Salário não pode ser menor do que um salário minimo.")
         if(nome.isBlank() || nome.trim().length < 4) throw CadastroException("Campo nome deve ter ao menos 4 caracteres.")
     }
-
-
 }
