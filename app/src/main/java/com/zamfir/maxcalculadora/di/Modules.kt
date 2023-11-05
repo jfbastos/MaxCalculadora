@@ -4,14 +4,17 @@ import androidx.room.Room
 import com.zamfir.maxcalculadora.data.AppDatabase
 import com.zamfir.maxcalculadora.data.repository.TrimestreRepository
 import com.zamfir.maxcalculadora.data.repository.UserRepository
+import com.zamfir.maxcalculadora.domain.usecase.AnualUseCase
+import com.zamfir.maxcalculadora.domain.usecase.FeriasUseCase
 import com.zamfir.maxcalculadora.domain.usecase.TrimestreUseCase
 import com.zamfir.maxcalculadora.domain.usecase.UserUseCase
 import com.zamfir.maxcalculadora.util.Constants
+import com.zamfir.maxcalculadora.viewmodel.AnualViewModel
+import com.zamfir.maxcalculadora.viewmodel.FeriasViewModel
 import com.zamfir.maxcalculadora.viewmodel.TrimestreViewModel
 import com.zamfir.maxcalculadora.viewmodel.UserViewModel
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidApplication
-import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
@@ -29,18 +32,19 @@ val repositoryModule = module {
 val useCaseModule = module{
     single { TrimestreUseCase(get(), get(named(Constants.IO_DISPATCHER)))}
     single { UserUseCase(get())}
+    single { AnualUseCase(get())}
+    single { FeriasUseCase(get())}
 }
 
 val viewModelModule = module{
     viewModel { TrimestreViewModel(get()) }
     viewModel { UserViewModel(get()) }
+    viewModel { AnualViewModel(get())}
+    viewModel { FeriasViewModel(get())}
 }
 
 val dataBaseModule = module {
     single { buildDatabase() }
-    single { get<AppDatabase>().feriasDao() }
-    single { get<AppDatabase>().historicoDao() }
-    single { get<AppDatabase>().metaDao() }
     single { get<AppDatabase>().trimestreDao() }
 }
 

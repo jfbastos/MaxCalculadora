@@ -5,20 +5,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.zamfir.maxcalculadora.R
 import com.zamfir.maxcalculadora.data.model.Trimestre
+import com.zamfir.maxcalculadora.data.model.Usuario
 import com.zamfir.maxcalculadora.databinding.FragmentTrimestralBinding
+import com.zamfir.maxcalculadora.domain.model.TrimestreVO
+import com.zamfir.maxcalculadora.util.Constants
 import com.zamfir.maxcalculadora.util.doubleToStringWithTwoDecimals
 import com.zamfir.maxcalculadora.util.setMonetary
 import com.zamfir.maxcalculadora.util.show
 import com.zamfir.maxcalculadora.view.activity.MainActivity
+import com.zamfir.maxcalculadora.view.listener.UserEditListener
 import com.zamfir.maxcalculadora.viewmodel.TrimestreViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.math.BigDecimal
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
 
 class FragmentTrimestral : Fragment() {
 
@@ -30,16 +32,15 @@ class FragmentTrimestral : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentTrimestralBinding.inflate(inflater)
-
-        salario = arguments?.getString("salario", "")
-
+        salario = arguments?.getString(Constants.BUNDLE_SALARY_KEY, "")
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (requireActivity() as MainActivity).toolbar?.title = "Trimestral"
+        (requireActivity() as MainActivity).toolbar?.title = getString(R.string.toolbar_title_trimestral)
+
         if((requireActivity() as MainActivity).toolbar?.navigationIcon == null){
             (requireActivity() as MainActivity).configNavigationDrawer()
         }
@@ -59,29 +60,37 @@ class FragmentTrimestral : Fragment() {
                 binding.resultadoPlaceHolder.show(true)
                 binding.txvValorBonificacao.text = bonificacao
             }
+
+            state.error?.let {
+                Snackbar.make(requireView(), "${it.message}", Snackbar.LENGTH_SHORT).show()
+            }
         }
 
         binding.btnCalcular.setOnClickListener {
-            if(binding.txtFieldMeta.text.toString().isBlank()) {
-                Snackbar.make(requireView(), "Valor da meta não pode ser vazia.", Snackbar.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            if(binding.txtFieldMeta.text.toString() == "0"){
-                Snackbar.make(requireView(), "Sem meta para calcular.", Snackbar.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            viewModel.getBonificacaoTrimestral(
-                binding.isCalculoParcial.isChecked,
-                binding.txtFieldPrimeiroTri.text.toString(),
-                binding.txtFieldSegundoTri.text.toString(),
-                binding.txtFieldTerceiroTri.text.toString(),
-                binding.txtFieldQuartoTri.text.toString(),
-                binding.txtFieldMeta.text.toString(),
-                binding.exposedMesAdmissao.text.toString())
+            viewModel.getBonificacaoTrimestral(setTrimestreVo())
         }
+
+        UserEditListener.onReceiver(object : UserEditListener {
+            override fun onUpdateUser(usuario: Usuario) {
+                binding.txtFieldSalario.setMonetary(usuario.salario.doubleToStringWithTwoDecimals())
+                (requireActivity() as MainActivity).setHeaderValues(salario = "${binding.txtFieldSalario.text}", nome = usuario.nome)
+            }
+
+            override fun onError(e: Exception) {
+                Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
+            }
+        })
     }
+
+    private fun setTrimestreVo() = TrimestreVO(
+        isCalculoParcial = binding.isCalculoParcial.isChecked,
+        valorPrimeiroTrimestre = binding.txtFieldPrimeiroTri.text.toString(),
+        valorSegundoTrimestre = binding.txtFieldSegundoTri.text.toString(),
+        valorTerceiroTrimestre = binding.txtFieldTerceiroTri.text.toString(),
+        valorQuartoTrimestre = binding.txtFieldQuartoTri.text.toString(),
+        metaAtingida = binding.txtFieldMeta.text.toString(),
+        dataAdmissao = binding.exposedMesAdmissao.text.toString()
+    )
 
     private fun setCalculoParcial() {
         binding.isCalculoParcial.isChecked = trimestre?.isCalculoParcial == true
@@ -91,8 +100,8 @@ class FragmentTrimestral : Fragment() {
         }
 
         binding.infoCalculoParcialBtn.setOnClickListener {
-            Snackbar.make(requireView(), "Calculo feito em cima da data de admissão.", Snackbar.LENGTH_SHORT).setAction("Saiba mais") {
-                AlertDialog.Builder(requireContext()).setTitle("Meta parcial").setMessage(getString(R.string.info_calculo_parcial)).setPositiveButton("Ok") { dialog, _ ->
+            Snackbar.make(requireView(),  getString(R.string.info_snackbar_parcial), Snackbar.LENGTH_SHORT).setAction(getString(R.string.btn_saiba_mais_snackbar)) {
+                AlertDialog.Builder(requireContext()).setTitle(getString(R.string.title_dialog_parcial)).setMessage(getString(R.string.info_calculo_parcial)).setPositiveButton(getString(R.string.ok)) { dialog, _ ->
                     dialog.dismiss()
                 }.show()
             }.show()
@@ -106,6 +115,5 @@ class FragmentTrimestral : Fragment() {
         binding.txtFieldTerceiroTri.setMonetary(trimestre?.valorTerceiroTrimestre.doubleToStringWithTwoDecimals())
         binding.txtFieldQuartoTri.setMonetary(trimestre?.valorQuartoTrimestre.doubleToStringWithTwoDecimals())
         if(trimestre?.metaAtingida == null) binding.txtFieldMeta.setText("") else binding.txtFieldMeta.setText(String.format("%.2f", (trimestre.metaAtingida * 100)))
-
     }
 }

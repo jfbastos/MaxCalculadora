@@ -7,13 +7,13 @@
     tools:context=".view.activity.FirstAccessActivity"
     android:paddingHorizontal="12dp"
     android:paddingTop="24dp"
-    android:background="?attr/colorPrimary">
+    android:background="@color/primary_color">
 
     <TextView
         android:id="@+id/header_welcome_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Olá,\nbem-vindo ao MaxCalculadora"
+        android:text="@string/title_msg_first_access"
         android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -25,7 +25,7 @@
         android:id="@+id/welcome_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="O app irá lhe auxiliar a realizar alguns cálculos, bem como o de bonificação trimestral, bonificação anual e férias.\n\nPara isso, precisaremos de duas informações suas."
+        android:text="@string/msg_first_access"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:layout_marginTop="8dp"
@@ -37,7 +37,7 @@
         android:id="@+id/txv_salario_bruto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Seu salário base (bruto):"
+        android:text="@string/txv_text_seu_salario_bruto"
         android:textColor="@color/white"
         android:textStyle="bold"
         android:layout_marginTop="24dp"
@@ -45,13 +45,13 @@
         app:layout_constraintTop_toBottomOf="@id/welcome_message"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <EditText
+    <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/salario"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:minHeight="50dp"
         android:textColor="@color/white"
-        android:background="@drawable/custom_background_card"
+        android:background="@drawable/custom_edittext_background"
         android:inputType="numberDecimal"
         android:layout_marginTop="4dp"
         android:padding="12dp"
@@ -65,7 +65,7 @@
         android:id="@+id/txv_nome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="e claro, seu nome:"
+        android:text="@string/txv_text_seu_nome"
         android:textColor="@color/white"
         android:textStyle="bold"
         android:layout_marginTop="24dp"
@@ -73,13 +73,13 @@
         app:layout_constraintTop_toBottomOf="@id/salario"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <EditText
+    <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/nome"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:minHeight="50dp"
         android:textColor="@color/white"
-        android:background="@drawable/custom_background_card"
+        android:background="@drawable/custom_edittext_background"
         android:layout_marginTop="4dp"
         android:padding="12dp"
         tools:text="Joaquim"
@@ -97,7 +97,8 @@
         android:layout_margin="16dp"
         android:src="@drawable/baseline_navigate_next_24"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/go_to_next_screen_description" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

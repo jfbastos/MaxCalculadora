@@ -13,17 +13,12 @@ class UserViewModel(private val userCase : UserUseCase) : ViewModel(){
     private val _userSate = MutableLiveData<UserState>()
     val userState : LiveData<UserState> get() = _userSate
 
-
     fun salvarDadosUsuario(salario : String, nome : String) = viewModelScope.launch {
         try{
             _userSate.value = UserState(isLoading = true)
-            userCase.salvarUsuario(salario, nome)
-            _userSate.value = UserState(isSuccess = true)
+            _userSate.value = UserState(usuario = userCase.salvarUsuario(salario, nome))
         }catch (e : Exception){
             _userSate.value = UserState(error = e)
         }
     }
-
-
-
 }

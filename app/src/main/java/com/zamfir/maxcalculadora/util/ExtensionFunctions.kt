@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.View
 import com.google.android.material.textfield.TextInputEditText
 import java.lang.StringBuilder
+import java.math.RoundingMode
 
 fun View.show(isVisible : Boolean){
     if(isVisible) this.visibility = View.VISIBLE
@@ -11,13 +12,21 @@ fun View.show(isVisible : Boolean){
 }
 
 fun TextInputEditText.setMonetary(text : String){
-    this.apply {
-        addTextChangedListener(MoneyTextWatcher(this))
-        setText(text)
+    try{
+        this.apply {
+            addTextChangedListener(MoneyTextWatcher(this))
+            setText(text)
+        }
+    }catch (e : Exception){
+        e.printStackTrace()
     }
 }
 
 fun Double?.doubleToStringWithTwoDecimals() = String.format("%.2f", (this ?: 0.0))
+
+fun Double?.doubleToMonetary() = "R$ ${String.format("%.2f", (this ?: 0.0))}"
+
+fun Double.roundUp() = this.toBigDecimal().setScale(2, RoundingMode.UP).toDouble()
 
 fun String?.convertMonetaryToDouble(): Double {
     if (this.isNullOrEmpty()) return 0.0

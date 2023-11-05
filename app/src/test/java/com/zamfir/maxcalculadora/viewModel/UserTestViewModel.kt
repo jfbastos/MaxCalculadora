@@ -1,8 +1,10 @@
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.zamfir.maxcalculadora.data.model.Usuario
 import com.zamfir.maxcalculadora.domain.usecase.UserUseCase
 import com.zamfir.maxcalculadora.viewmodel.UserViewModel
 import com.zamfir.maxcalculadora.viewmodel.state.UserState
+import io.mockk.Awaits
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -43,12 +45,11 @@ class UserViewModelTest {
 
     @Test
     fun `when saveUserData is called, userState should update`() = runBlocking {
-        //Aqui eu configurei para o liveData observar para sempre esse objeto
-        userViewModel.userState.observeForever(observer)
 
         // É necessário configurar o mock
-        every { userUseCase.salvarUsuario("1000", "Murillo") } just Runs
-
+        every { userUseCase.salvarUsuario("1000", "Murillo") } returns Usuario(1000.00, "Murillo")
+        //Aqui eu configurei para o liveData observar para sempre esse objeto
+        userViewModel.userState.observeForever(observer)
         // Ação
         userViewModel.salvarDadosUsuario("1000", "Murillo")
 
@@ -57,7 +58,7 @@ class UserViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         //Aqui eu faço a verificação se o valor experado é igual do atual. Como quero saber se o viewModel está mudando os valores
-        assertEquals(true, userViewModel.userState.value?.isSuccess)
+        assertEquals(Usuario(1000.00, "Murillo"), userViewModel.userState.value?.usuario)
     }
 
     @Test
