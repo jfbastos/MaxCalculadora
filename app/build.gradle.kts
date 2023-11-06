@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "com.zamfir.maxcalculadora"
-    compileSdk = 34
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "com.zamfir.maxcalculadora"
         minSdk = 28
-        targetSdk = 34
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
@@ -38,28 +38,47 @@ android {
 }
 
 dependencies {
-
-    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.10.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation ("androidx.navigation:navigation-fragment-ktx:2.7.4")
-    implementation ("androidx.navigation:navigation-ui-ktx:2.7.4")
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("junit:junit:4.12")
+    implementation("androidx.legacy:legacy-support-v4:1.0.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
+    testImplementation("junit:junit:+")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    implementation("androidx.work:work-runtime-ktx:2.8.0")
 
-    //Room
-    implementation("androidx.room:room-runtime:2.5.2")
-    ksp("androidx.room:room-compiler:2.5.2")
-    implementation ("androidx.room:room-ktx:2.5.2")
+    // Material design
+    implementation("com.google.android.material:material:1.8.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
-    //Injection
+    // Architectural Components
+    implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
+
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+
+    // Navigation Components
+    implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
+    implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
+    implementation("androidx.drawerlayout:drawerlayout:1.2.0")
+
+    // Activity KTX for viewModels()
+    implementation("androidx.activity:activity-ktx:1.6.1")
+
+    // Room
+    implementation("androidx.room:room-runtime:2.5.1")
+    kapt("androidx.room:room-compiler:2.5.1")
+    implementation("androidx.room:room-ktx:2.5.1")
+
+    // Injection
+    val koinVersion = "3.1.5"
     implementation("io.insert-koin:koin-android:3.1.5")
-    implementation("io.insert-koin:koin-android-compat:3.1.5")
-    implementation("io.insert-koin:koin-androidx-workmanager:3.1.5")
-    implementation("io.insert-koin:koin-androidx-navigation:3.1.5")
-    implementation("io.insert-koin:koin-androidx-compose:3.1.5")
+    implementation("io.insert-koin:koin-android-compat:$koinVersion")
+    implementation("io.insert-koin:koin-androidx-workmanager:$koinVersion")
+    implementation("io.insert-koin:koin-androidx-navigation:$koinVersion")
+    implementation("io.insert-koin:koin-androidx-compose:$koinVersion")
     implementation("androidx.core:core-splashscreen:1.0.0")
 }
