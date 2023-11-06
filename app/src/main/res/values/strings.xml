@@ -7,7 +7,7 @@
     <string name="toolbar_title_ferias">Férias</string>
     <string name="toolbar_title_meta">Meta anual</string>
     <string name="btn_saiba_mais_snackbar">Saiba mais</string>
-    <string name="info_snackbar_parcial">Calculo feito em cima da data de admissão.</string>
+    <string name="info_snackbar_parcial">Cálculo feito em cima da data de admissão.</string>
     <string name="title_dialog_parcial">Meta parcial</string>
     <string name="ok">Ok</string>
     <string name="toolbar_title_trimestral">Trimestral</string>

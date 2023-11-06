@@ -169,7 +169,7 @@
             android:id="@+id/txv_msg_parcial"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Calculo parcial"/>
+            android:text="Cálculo parcial"/>
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/is_calculo_parcial"
