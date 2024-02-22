@@ -56,13 +56,17 @@ class FragmentTrimestral : Fragment() {
 
         viewModel.trimestralState.observe(viewLifecycleOwner){ state ->
             state.result?.let {
-                val bonificacao = "R$ ${state.result.doubleToStringWithTwoDecimals()}"
-                binding.resultadoPlaceHolder.show(true)
-                binding.txvValorBonificacao.text = bonificacao
+                if(state.result > 0.0){
+                    val bonificacao = "R$ ${state.result.doubleToStringWithTwoDecimals()}"
+                    binding.resultadoPlaceHolder.show(true)
+                    binding.txvValorBonificacao.text = bonificacao
+                }else{
+                    Snackbar.make(requireView(), "Sem premiação :'(", Snackbar.LENGTH_LONG).show()
+                }
             }
 
             state.error?.let {
-                Snackbar.make(requireView(), "${it.message}", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(requireView(), "${it.message}", Snackbar.LENGTH_LONG).show()
             }
         }
 
@@ -77,7 +81,7 @@ class FragmentTrimestral : Fragment() {
             }
 
             override fun onError(e: Exception) {
-                Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), e.message, Toast.LENGTH_LONG).show()
             }
         })
     }

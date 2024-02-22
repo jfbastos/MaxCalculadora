@@ -1,8 +1,6 @@
 package com.zamfir.maxcalculadora.domain.usecase
 
-import android.util.Log
 import com.zamfir.maxcalculadora.data.model.Meta
-import com.zamfir.maxcalculadora.data.model.Usuario
 import com.zamfir.maxcalculadora.data.repository.UserRepository
 import com.zamfir.maxcalculadora.domain.exception.MetaException
 import com.zamfir.maxcalculadora.domain.mapper.MetaMapper
@@ -15,9 +13,8 @@ class AnualUseCase(private val userRepository: UserRepository) {
     operator fun invoke(metaVO: MetaVO) : Double{
         isCamposValidos(metaVO)
 
-        val user = userRepository.getUsuario()
         val meta = MetaMapper.voToMeta(metaVO)
-        val salarioBase = calculaSalarioBase(user, meta)
+        val salarioBase = calculaSalarioBase(meta)
         return salarioBase * meta.metaAcancada
     }
 
@@ -27,15 +24,16 @@ class AnualUseCase(private val userRepository: UserRepository) {
         if(metaVO.metaAcancada.toDoubleOrNull() != null && metaVO.metaAcancada.toDouble() == 0.0) throw MetaException("Sem meta para calcular.")
     }
 
-    private fun calculaSalarioBase( user: Usuario, meta : Meta) : Double{
+    private fun calculaSalarioBase(meta : Meta) : Double{
         return try{
+            val salario = userRepository.getUsuario().salario
             if(meta.isCalculoParcial){
-                (user.salario / 12) * UtilData.getMesAdmissao(meta.mesAdmissao)
+                (salario / 12) * (12 - UtilData.getMesAdmissao(meta.mesAdmissao))
             }else{
-                user.salario
+                (salario / 12) * 12
             }
         }catch (e : Exception){
-            Log.d("DEBUG", "Erro : ${e.stackTraceToString()}")
+            e.printStackTrace()
             0.0
         }
     }

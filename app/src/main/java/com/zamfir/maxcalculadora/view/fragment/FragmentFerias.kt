@@ -1,14 +1,18 @@
 package com.zamfir.maxcalculadora.view.fragment
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import com.zamfir.maxcalculadora.R
 import com.zamfir.maxcalculadora.data.model.Usuario
 import com.zamfir.maxcalculadora.databinding.FragmentFeriasBinding
+import com.zamfir.maxcalculadora.domain.exception.AbonoPecuniarioException
+import com.zamfir.maxcalculadora.domain.exception.QuantidadeDiasException
 import com.zamfir.maxcalculadora.util.Constants
 import com.zamfir.maxcalculadora.util.doubleToMonetary
 import com.zamfir.maxcalculadora.util.doubleToStringWithTwoDecimals
@@ -69,6 +73,20 @@ class FragmentFerias : Fragment() {
                 }
 
                 binding.total.text = ferias.total.doubleToMonetary()
+            }
+
+            state.error?.let {
+                when(it){
+                    is QuantidadeDiasException -> Snackbar.make(requireView(), "${it.message}", Snackbar.LENGTH_LONG).show()
+                    is AbonoPecuniarioException -> {
+                        AlertDialog.Builder(requireContext())
+                            .setTitle("Abono pecuniário")
+                            .setMessage(it.message)
+                            .setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                                dialog.dismiss()
+                            }.show()
+                    }
+                }
             }
         }
 
