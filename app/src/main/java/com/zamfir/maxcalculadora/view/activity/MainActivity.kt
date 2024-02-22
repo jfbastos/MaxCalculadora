@@ -181,4 +181,9 @@ class MainActivity : AppCompatActivity() {
         val sharedPreferences = this.getSharedPreferences(Constants.SHARED_FILE, Context.MODE_PRIVATE)
         return sharedPreferences.getString(Constants.SHARED_NAME_KEY, "") ?: ""
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        this.finish()
+    }
 }
