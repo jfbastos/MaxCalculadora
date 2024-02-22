@@ -97,9 +97,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setHeaderValues(salario : String?, nome : String?) {
-        binding.navigationDrawer.getHeaderView(0).also {
-            it.findViewById<TextView>(R.id.salario_usuario).text = salario ?: ""
-            it.findViewById<TextView>(R.id.nome_usuario).text = nome ?: ""
+        binding.navigationDrawer.getHeaderView(0).also { view ->
+            view.findViewById<TextView>(R.id.salario_usuario).text = salario ?: ""
+            nome?.split(" ")?.let {
+                if(it.isEmpty()) view.findViewById<TextView>(R.id.nome_usuario).text = ""
+                view.findViewById<TextView>(R.id.nome_usuario).text = it[0]
+            }
         }
     }
 

@@ -20,4 +20,6 @@
     <string name="nome_hint">Nome</string>
     <string name="salario_hint">Salário</string>
     <string name="btn_salvar_text">Salvar</string>
+    <string name="msg_calculo" translatable="false">Atenção!\nOs valores podem não ser exatos, sendo apenas um cálculo aproximado.</string>
+
 </resources>

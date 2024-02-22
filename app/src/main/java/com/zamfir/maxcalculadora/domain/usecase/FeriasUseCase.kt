@@ -1,13 +1,20 @@
 package com.zamfir.maxcalculadora.domain.usecase
 
 import com.zamfir.maxcalculadora.data.repository.UserRepository
+import com.zamfir.maxcalculadora.domain.exception.AbonoPecuniarioException
+import com.zamfir.maxcalculadora.domain.exception.QuantidadeDiasException
 import com.zamfir.maxcalculadora.domain.model.FeriasVO
 import com.zamfir.maxcalculadora.domain.util.CalculoReceita
 import com.zamfir.maxcalculadora.util.roundUp
 
 class FeriasUseCase (private val userRepository: UserRepository){
 
+    @Throws
     operator fun invoke(diasFerias : Int, isAbono : Boolean, isAdiantamento : Boolean) : FeriasVO{
+
+        isCalculoValido(diasFerias, isAbono)
+
+
         val salario = userRepository.getUsuario().salario
         val result = if(diasFerias != 30) calculaFeriasFracionada(salario,diasFerias) else calculaFerias(salario)
 
@@ -29,6 +36,14 @@ class FeriasUseCase (private val userRepository: UserRepository){
         return result
     }
 
+    private fun isCalculoValido(dias: Int, isAbono: Boolean) {
+         when {
+             dias < 5 -> throw QuantidadeDiasException("A quantidade de dias não pode ser menor do que 5.")
+             dias > 30 -> throw QuantidadeDiasException("A quantidade de dias não pode ser maior do que 30.")
+             dias < 30 && isAbono -> throw AbonoPecuniarioException("Para que o abono pecuniário possa ser solicitado, é necessário tirar 30 dias de férias.")
+        }
+    }
+
     private fun calculaFerias(salario: Double) : FeriasVO{
         val salarioBase = calculaSalarioBase(salario)
         val descontoInss = CalculoReceita.calculaDescontoInss(salarioBase)
@@ -44,7 +59,7 @@ class FeriasUseCase (private val userRepository: UserRepository){
         val descontoInss = CalculoReceita.calculaDescontoInss(salarioBase)
         val descontoIrrf = CalculoReceita.calculaDescontoIrrf(salarioBase - descontoInss)
         return FeriasVO(salario = salarioParcial.roundUp(), terco = calculaUmTerco(salarioParcial).roundUp(), inss = descontoInss.roundUp(), irrf = descontoIrrf.roundUp()).apply {
-            this.total = ((salario + terco) - (inss + irrf)).roundUp()
+            this.total = ((salarioParcial + terco) - (inss + irrf)).roundUp()
         }
     }
 

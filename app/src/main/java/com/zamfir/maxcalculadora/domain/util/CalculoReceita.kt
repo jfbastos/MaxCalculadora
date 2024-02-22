@@ -2,31 +2,43 @@ package com.zamfir.maxcalculadora.domain.util
 
 object CalculoReceita {
 
+    private const val PRIMEIRA_FAIXA_SALARIO_INSS = 1320.00
+    private const val SEGUNDA_FAIXA_SALARIO_INSS = 2571.29
+    private const val TERCEIRA_FAIXA_SALARIO_INSS = 3856.94
+    private const val QUARTA_FAIXA_SALARIO_INSS = 7507.94
+
+    private const val DESCONTO_PRIMEIRA_FAIXA_INSS = 0.075
+    private const val DESCONTO_SEGUNDA_FAIXA_INSS = 0.09
+    private const val DESCONTO_TERCEIRA_FAIXA_INSS = 0.12
+    private const val DESCONTO_QUARTA_FAIXA_INSS = 0.14
+
     fun calculaDescontoInss(salario: Double) : Double{
         var desconto = 0.0
 
-        if(salario > 1320.00) {
-            desconto += (1320.0 * 0.075)
+        if(salario <= PRIMEIRA_FAIXA_SALARIO_INSS) return desconto
+
+        if(salario > PRIMEIRA_FAIXA_SALARIO_INSS) {
+            desconto += (PRIMEIRA_FAIXA_SALARIO_INSS * DESCONTO_PRIMEIRA_FAIXA_INSS)
         }
 
-        if(salario > 2571.29) {
-            desconto += (2571.29 - 1320.0) * 0.09
+        if(salario > SEGUNDA_FAIXA_SALARIO_INSS) {
+            desconto += (SEGUNDA_FAIXA_SALARIO_INSS - PRIMEIRA_FAIXA_SALARIO_INSS) * DESCONTO_SEGUNDA_FAIXA_INSS
         }else{
-            desconto += (salario - 1320.0) * 0.09
+            desconto += (salario - PRIMEIRA_FAIXA_SALARIO_INSS) * DESCONTO_SEGUNDA_FAIXA_INSS
             return desconto
         }
 
-        if(salario > 3856.94) {
-            desconto += (3856.94 - 2571.29) * 0.12
+        if(salario > TERCEIRA_FAIXA_SALARIO_INSS) {
+            desconto += (TERCEIRA_FAIXA_SALARIO_INSS - SEGUNDA_FAIXA_SALARIO_INSS) * DESCONTO_TERCEIRA_FAIXA_INSS
         }else{
-            desconto += (salario - 2571.29) * 0.12
+            desconto += (salario - SEGUNDA_FAIXA_SALARIO_INSS) * DESCONTO_TERCEIRA_FAIXA_INSS
             return desconto
         }
 
-        if(salario > 7507.94){
-            desconto += (7507.94 -3856.94) * 0.14
+        if(salario > QUARTA_FAIXA_SALARIO_INSS){
+            desconto += (QUARTA_FAIXA_SALARIO_INSS - TERCEIRA_FAIXA_SALARIO_INSS) * DESCONTO_QUARTA_FAIXA_INSS
         }else{
-            desconto += (salario - 3856.94) * 0.14
+            desconto += (salario - TERCEIRA_FAIXA_SALARIO_INSS) * DESCONTO_QUARTA_FAIXA_INSS
             return desconto
         }
 

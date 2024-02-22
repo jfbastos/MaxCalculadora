@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="8dp">
+    android:padding="12dp">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layout_salario"
@@ -159,12 +159,13 @@
 
         <ImageButton
             android:id="@+id/info_calculo_parcial_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:scaleType="fitXY"
+            app:tint="@color/primary_color"
+            android:src="@drawable/help_drawable"
             android:background="#00FFFFFF"
-            android:src="@drawable/outline_info_24" />
-
+            android:layout_marginEnd="4dp"/>
         <TextView
             android:id="@+id/txv_msg_parcial"
             android:layout_width="wrap_content"
@@ -181,7 +182,6 @@
         android:id="@+id/resultado_place_holder"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:paddingHorizontal="12dp"
         app:layout_constraintBottom_toTopOf="@id/btn_calcular"
         app:layout_constraintTop_toBottomOf="@id/calculo_parcial_place_holder"
         app:layout_constraintStart_toStartOf="parent"
@@ -191,7 +191,7 @@
             android:id="@+id/txv_valor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Valor a receber : "
+            android:text="Premiação : "
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"
@@ -209,22 +209,26 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Atenção, os valores podem não ser exatos, sendo apenas um valor estimado para bonificação."
+            android:text="@string/msg_calculo"
             app:layout_constraintTop_toBottomOf="@id/txv_valor_bonificacao"
             android:textSize="16sp"
+            android:layout_marginTop="12dp"
             android:textStyle="bold"
             android:textColor="?attr/colorPrimary"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_calcular"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Calcular"
+        app:cornerRadius="8dp"
         android:textColor="@color/white"
         android:paddingHorizontal="12dp"
+        app:backgroundTint="@color/very_dark_primary_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
