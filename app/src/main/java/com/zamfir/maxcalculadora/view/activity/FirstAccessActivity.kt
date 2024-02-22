@@ -3,6 +3,7 @@ package com.zamfir.maxcalculadora.view.activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.snackbar.Snackbar
@@ -46,5 +47,11 @@ class FirstAccessActivity : AppCompatActivity() {
         }
 
         binding.salario.setMonetary((0.0).doubleToMonetary())
+    }
+
+    override fun onBackPressed() {
+        //super.onBackPressed()
+        this.finishAffinity()
+
     }
 }

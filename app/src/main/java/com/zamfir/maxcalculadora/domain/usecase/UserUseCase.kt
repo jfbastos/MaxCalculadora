@@ -20,7 +20,7 @@ class UserUseCase(private val userRespository : UserRepository) {
     private fun isCamposValidos(salario: String, nome: String){
         if(salario.isBlank()) throw CadastroException("Campo salário não pode ser vazio.")
         if(salario.convertMonetaryToDouble() < Constants.SALARIO_MINIMO) throw CadastroException("Salário não pode ser menor do que um salário minimo.")
-        if(nome.isBlank() || nome.trim().length < 4) throw CadastroException("Campo nome deve ter ao menos 4 caracteres.")
+        if(nome.isBlank() || nome.trim().length < 2) throw CadastroException("Campo nome deve ter ao menos 2 caracteres.")
     }
 
 
