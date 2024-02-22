@@ -14,19 +14,20 @@ class FeriasUseCase (private val userRepository: UserRepository){
 
         isCalculoValido(diasFerias, isAbono)
 
-
         val salario = userRepository.getUsuario().salario
-        val result = if(diasFerias != 30) calculaFeriasFracionada(salario,diasFerias) else calculaFerias(salario)
+        val result : FeriasVO?
 
         if(isAbono){
-            result.apply {
+            result = calculaFeriasPecuniario(salario).apply {
                 pecuniario = calculaUmTerco(salario).roundUp()
                 tercoPecuniario = calculaUmTerco(pecuniario).roundUp()
                 total += pecuniario + tercoPecuniario
             }
+        }else{
+            result = if(diasFerias != 30) calculaFeriasFracionada(salario,diasFerias) else calculaFerias(salario)
         }
 
-        if(isAdiantamento) {
+        if (isAdiantamento) {
             result.apply {
                 adiantDecimo = (salario / 2).roundUp()
                 total += adiantDecimo
@@ -48,8 +49,18 @@ class FeriasUseCase (private val userRepository: UserRepository){
         val salarioBase = calculaSalarioBase(salario)
         val descontoInss = CalculoReceita.calculaDescontoInss(salarioBase)
         val descontoIrrf = CalculoReceita.calculaDescontoIrrf(salarioBase - descontoInss)
-        return FeriasVO(salario = salario.roundUp(), terco = calculaUmTerco(salario).roundUp(), inss = descontoInss.roundUp(), irrf = descontoIrrf.roundUp()).apply {
-            this.total = ((salario + terco) - (inss + irrf)).roundUp()
+        return FeriasVO(salario = salarioBase.roundUp(), terco = calculaUmTerco(salarioBase).roundUp(), inss = descontoInss.roundUp(), irrf = descontoIrrf.roundUp()).apply {
+            this.total = ((salarioBase + terco) - (inss + irrf)).roundUp()
+        }
+    }
+
+    private fun calculaFeriasPecuniario(salario: Double) : FeriasVO{
+        val salarioParcial = (salario / 30) * 20
+        val salarioBase = calculaSalarioBase(salarioParcial)
+        val descontoInss = CalculoReceita.calculaDescontoInss(salarioBase)
+        val descontoIrrf = CalculoReceita.calculaDescontoIrrf(salarioBase - descontoInss)
+        return FeriasVO(salario = salarioParcial.roundUp(), terco = calculaUmTerco(salarioParcial).roundUp(), inss = descontoInss.roundUp(), irrf = descontoIrrf.roundUp()).apply {
+            this.total = ((salarioParcial + terco) - (inss + irrf)).roundUp()
         }
     }
 
