@@ -55,18 +55,20 @@ class FragmentTrimestral : Fragment() {
         setCalculoParcial()
 
         viewModel.trimestralState.observe(viewLifecycleOwner){ state ->
+
+            if(state.error.isNotBlank()){
+                Snackbar.make(requireView(), state.error, Snackbar.LENGTH_LONG).show()
+                return@observe
+            }
+
             state.result?.let {
                 if(state.result > 0.0){
                     val bonificacao = "R$ ${state.result.doubleToStringWithTwoDecimals()}"
                     binding.resultadoPlaceHolder.show(true)
                     binding.txvValorBonificacao.text = bonificacao
                 }else{
-                    Snackbar.make(requireView(), "Sem premiação :'(", Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(requireView(), "Sem premiação 😓", Snackbar.LENGTH_LONG).show()
                 }
-            }
-
-            state.error?.let {
-                Snackbar.make(requireView(), "${it.message}", Snackbar.LENGTH_LONG).show()
             }
         }
 

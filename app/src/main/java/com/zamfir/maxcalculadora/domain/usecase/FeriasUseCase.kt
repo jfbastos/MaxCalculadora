@@ -1,19 +1,24 @@
 package com.zamfir.maxcalculadora.domain.usecase
 
 import com.zamfir.maxcalculadora.data.repository.UserRepository
-import com.zamfir.maxcalculadora.domain.exception.AbonoPecuniarioException
-import com.zamfir.maxcalculadora.domain.exception.QuantidadeDiasException
+import com.zamfir.maxcalculadora.domain.model.Either
 import com.zamfir.maxcalculadora.domain.model.FeriasVO
 import com.zamfir.maxcalculadora.domain.util.CalculoReceita
+import com.zamfir.maxcalculadora.domain.util.ConstantesMensagens.MSG_ABONO_PECUNIARIO
+import com.zamfir.maxcalculadora.domain.util.ConstantesMensagens.MSG_QNT_DIAS_MAIOR_QUE_TRINTA
+import com.zamfir.maxcalculadora.domain.util.ConstantesMensagens.MSG_QNT_DIAS_MENOR_QUE_CINCO
 import com.zamfir.maxcalculadora.util.roundUp
 
 class FeriasUseCase (private val userRepository: UserRepository){
 
     @Throws
-    operator fun invoke(diasFerias : Int, isAbono : Boolean, isAdiantamento : Boolean) : FeriasVO{
+    operator fun invoke(diasFerias : Int, isAbono : Boolean, isAdiantamento : Boolean) : Either<String, FeriasVO> {
 
-        isCalculoValido(diasFerias, isAbono)
-
+        when {
+            diasFerias < 5 -> return Either.Left(MSG_QNT_DIAS_MENOR_QUE_CINCO)
+            diasFerias > 30 -> return Either.Left(MSG_QNT_DIAS_MAIOR_QUE_TRINTA)
+            diasFerias < 30 && isAbono -> return Either.Left(MSG_ABONO_PECUNIARIO)
+        }
 
         val salario = userRepository.getUsuario().salario
         val result = if(diasFerias != 30) calculaFeriasFracionada(salario,diasFerias) else calculaFerias(salario)
@@ -33,15 +38,7 @@ class FeriasUseCase (private val userRepository: UserRepository){
             }
         }
 
-        return result
-    }
-
-    private fun isCalculoValido(dias: Int, isAbono: Boolean) {
-         when {
-             dias < 5 -> throw QuantidadeDiasException("A quantidade de dias não pode ser menor do que 5.")
-             dias > 30 -> throw QuantidadeDiasException("A quantidade de dias não pode ser maior do que 30.")
-             dias < 30 && isAbono -> throw AbonoPecuniarioException("Para que o abono pecuniário possa ser solicitado, é necessário tirar 30 dias de férias.")
-        }
+        return Either.Right(result)
     }
 
     private fun calculaFerias(salario: Double) : FeriasVO{

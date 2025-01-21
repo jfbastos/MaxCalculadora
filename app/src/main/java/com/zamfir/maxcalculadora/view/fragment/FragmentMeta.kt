@@ -41,14 +41,16 @@ class FragmentMeta : Fragment() {
         setCalculoParcial()
 
         viewModel.anualState.observe(viewLifecycleOwner){ anualState ->
+
+            if(anualState.error.isNotBlank()){
+                Snackbar.make(requireView(), anualState.error, Snackbar.LENGTH_SHORT).show()
+                return@observe
+            }
+
             anualState.result?.let {
                 val bonificacao = "R$ ${anualState.result.doubleToStringWithTwoDecimals()}"
                 binding.resultadoPlaceHolder.show(true)
                 binding.txvValorBonificacao.text = bonificacao
-            }
-
-            anualState.error?.let {
-                Snackbar.make(requireView(), "${it.message}", Snackbar.LENGTH_SHORT).show()
             }
         }
 
