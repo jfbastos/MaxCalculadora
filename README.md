@@ -37,16 +37,6 @@ Faça o push e crie o Merge request para a branch *DEVELOP*. O Merge **DEVE** se
 
 Caso haja alguma necessidade alteração Merge request, será comentado aonde deverá ser realizada a alteração e aguardaremos sua correção/alteração para nova análise. 
 
-Caso sua alteração não passe nos testes unitários e validações do gitflow, seu Merge será automaticamente rejeitado. 
-
-### Publicação 
-As alterações serão publicadas na Playstore após testes e validações. 
-
-
-### Playstore 
-Este app é publicado na Playstore (página playstore) em formato .aab para melhor gerenciamento de tamanho e facilidade na publicação. 
-
-
 ### Prints
 
 <img src='https://github.com/jfbastos/MaxCalculadora/assets/57013713/ff534c69-1085-4d6a-b23f-62234683567c' width=200>
