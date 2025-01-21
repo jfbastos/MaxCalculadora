@@ -180,12 +180,10 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/resultado_place_holder"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/btn_calcular"
-        app:layout_constraintTop_toBottomOf="@id/calculo_parcial_place_holder"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintBottom_toTopOf="@id/msg_valor_aprox"
+        app:layout_constraintTop_toBottomOf="@id/calculo_parcial_place_holder">
 
         <TextView
             android:id="@+id/txv_valor"
@@ -206,19 +204,22 @@
             app:layout_constraintStart_toEndOf="@id/txv_valor"
             app:layout_constraintTop_toTopOf="parent"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/msg_calculo"
-            app:layout_constraintTop_toBottomOf="@id/txv_valor_bonificacao"
-            android:textSize="16sp"
-            android:layout_marginTop="12dp"
-            android:textStyle="bold"
-            android:textColor="?attr/colorPrimary"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/msg_valor_aprox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/msg_calculo"
+        android:textSize="16sp"
+        android:layout_marginTop="12dp"
+        android:textStyle="bold"
+        android:textColor="?attr/colorPrimary"
+        app:layout_constraintBottom_toTopOf="@id/btn_calcular"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_calcular"
